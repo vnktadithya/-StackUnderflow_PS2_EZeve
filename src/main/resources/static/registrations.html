@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All Registrations</title>
+</head>
+<body>
+<h2>All Registrations</h2>
+<table border="1">
+  <tr>
+    <th>Person Name</th>
+    <th>Topic Name</th>
+    <th>Remaining Slots</th>
+  </tr>
+  <tbody id="registrationTable"></tbody>
+</table>
+
+<script>
+  fetch("http://localhost:8080/registrations/all")
+          .then(response => response.json())
+          .then(registrations => {
+            let table = document.getElementById("registrationTable");
+            let eventCounts = {};
+
+            // Count registrations per event only ONCE
+            registrations.forEach(reg => {
+              let eventId = reg.event.id;
+              if (!eventCounts[eventId]) {
+                eventCounts[eventId] = {
+                  totalMembers: reg.event.totalMembers,
+                  registered: 0
+                };
+              }
+              eventCounts[eventId].registered++;
+            });
+
+            let eventRemainingSlots = {}; // Track remaining slots per event
+
+            registrations.forEach(reg => {
+              let eventId = reg.event.id;
+
+              if (!eventRemainingSlots[eventId]) {
+                eventRemainingSlots[eventId] = eventCounts[eventId].totalMembers;
+              }
+              eventRemainingSlots[eventId]--; // Reduce available slots
+
+              let row = `<tr>
+                        <td>${reg.name}</td>
+                        <td>${reg.event.topicName}</td>
+                        <td>${eventRemainingSlots[eventId] > 0 ? eventRemainingSlots[eventId] : "Full"}</td>
+                    </tr>`;
+              table.innerHTML += row;
+            });
+          })
+          .catch(error => console.error("Error fetching registrations:", error));
+</script>
+</body>
+</html>

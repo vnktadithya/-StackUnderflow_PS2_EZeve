@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event List</title>
+  <script>
+    async function fetchEvents() {
+      const response = await fetch("http://localhost:8080/events/all");
+      const events = await response.json();
+      const tableBody = document.getElementById("eventTable");
+
+      tableBody.innerHTML = ""; // Clear previous data
+
+      events.forEach((event, index) => {
+        const row = `<tr style="background-color: ${index % 2 === 0 ? '#f9f9f9' : '#e9e9e9'};">
+                        <td style="text-align: center;">${event.id}</td>
+                        <td>${event.topicName}</td>
+                        <td>${event.location}</td>
+                        <td>${event.date}</td>
+                        <td>${event.starttime}</td>
+                        <td>${event.endtime}</td>
+                        <td style="text-align: center;">${event.totalMembers}</td>
+                        <td style="text-align: center;">
+                            <button
+                                onclick="register(${event.id})"
+                                style="background: #4CAF50; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 5px;">
+                                Register
+                            </button>
+                        </td>
+                    </tr>`;
+        tableBody.innerHTML += row;
+      });
+    }
+
+    function register(eventId) {
+      window.location.href = `register.html?eventId=${eventId}`;
+    }
+
+    window.onload = fetchEvents;
+  </script>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f9; margin: 0; padding: 20px; text-align: center;">
+
+<h1 style="color: #333;">📅 Upcoming Events</h1>
+
+<table border="1" style="width: 90%; margin: 20px auto; border-collapse: collapse; background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+  <thead>
+  <tr style="background-color: #4a5568; color: white;">
+    <th style="padding: 10px;">ID</th>
+    <th style="padding: 10px;">Topic</th>
+    <th style="padding: 10px;">Location</th>
+    <th style="padding: 10px;">Date</th>
+    <th style="padding: 10px;">Start Time</th>
+    <th style="padding: 10px;">End Time</th>
+    <th style="padding: 10px;">Total Members</th>
+    <th style="padding: 10px;">Action</th>
+  </tr>
+  </thead>
+  <tbody id="eventTable"></tbody>
+</table>
+
+</body>
+</html>

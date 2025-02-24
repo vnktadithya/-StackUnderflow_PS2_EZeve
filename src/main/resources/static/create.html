@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan Event - OXYGEN</title>
+  <script>
+    function goBackToEvents() {
+      window.location.href = "events.html";
+    }
+
+    function logout() {
+      alert("Logging out...");
+      window.location.href = "login.html";
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById("eventForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const eventData = {
+          topicName: document.getElementById("topicName").value,
+          description: document.getElementById("description").value,
+          roomNumber: document.getElementById("roomNumber").value,
+          location: document.getElementById("location").value,
+          date: document.getElementById("date").value,
+          starttime: document.getElementById("starttime").value + ":00",
+          endtime: document.getElementById("endtime").value + ":00",
+          totalMembers: document.getElementById("totalMembers").value,
+          involvedParticipants: document.getElementById("involvedParticipants").value,
+          chiefGuestName: document.getElementById("chiefGuestName").value
+        };
+
+        fetch("/events/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(eventData)
+        })
+                .then(response => response.json())
+                .then(data => {
+                  alert("Event Created Successfully!");
+                  document.getElementById("eventForm").reset();
+                })
+                .catch(error => console.error("Error:", error));
+      });
+    });
+  </script>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f9; margin: 0; padding: 20px; text-align: center;">
+
+<nav style="background-color: #4a5568; padding: 15px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; max-width: 900px; margin: auto;">
+    <div onclick="goBackToEvents()" style="color: white; font-size: 24px; font-weight: bold; cursor: pointer;">
+      OXYGEN
+    </div>
+    <div>
+      <button style="margin: 5px;">SERVICES</button>
+      <button style="margin: 5px;">WORK</button>
+      <button style="margin: 5px;">ABOUT</button>
+      <button style="margin: 5px;">SOCIAL</button>
+      <button style="margin: 5px;">CONTACT</button>
+      <button style="background: #ff4d4d; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 5px;" onclick="logout()">LOGOUT</button>
+    </div>
+  </div>
+</nav>
+
+<h1 style="color: #333; margin-top: 20px;">📅 Plan an Event</h1>
+
+<form id="eventForm" style="background: white; padding: 20px; width: 80%; max-width: 500px; margin: 20px auto; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px;">
+  <div style="text-align: left;">
+    <label for="topicName">Topic Name:</label>
+    <input type="text" id="topicName" name="topicName" required style="width: 100%; padding: 8px; margin-bottom: 10px;">
+
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description" required style="width: 100%; padding: 8px; margin-bottom: 10px;">
+
+    <label for="roomNumber">Room Number:</label>
+    <input type="text" id="roomNumber" name="roomNumber" required style="width: 100%; padding: 8px; margin-bottom: 10px;">
+
+    <label for="location">Location:</label>
+    <input type="text" id="location" name="location" required style="width: 100%; padding: 8px; margin-bottom: 10px;">
+
+    <label for="date">Date:</label>
+    <input type="date" id="date" name="date" required style="width: 100%; padding: 8px; margin-bottom: 10px;">
+
+    <label for="starttime">Start Time:</label>
+    <input type="time" id="starttime" name="starttime" required style="width: 100%; padding: 8px; margin-bottom: 10px;">
+
+    <label for="endtime">End Time:</label>
+    <input type="time" id="endtime" name="endtime" required style="width: 100%; padding: 8px; margin-bottom: 10px;">
+
+    <label for="totalMembers">Total Members:</label>
+    <input type="number" id="totalMembers" name="totalMembers" min="1" required style="width: 100%; padding: 8px; margin-bottom: 10px;">
+
+    <label for="involvedParticipants">Involved Participants:</label>
+    <input type="text" id="involvedParticipants" name="involvedParticipants" required style="width: 100%; padding: 8px; margin-bottom: 10px;">
+
+    <label for="chiefGuestName">Chief Guest Name:</label>
+    <input type="text" id="chiefGuestName" name="chiefGuestName" required style="width: 100%; padding: 8px; margin-bottom: 10px;">
+  </div>
+
+  <button type="submit" style="background: #4CAF50; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 5px; font-size: 16px;">
+    Submit Event & Send QR Code
+  </button>
+</form>
+
+</body>
+</html>
